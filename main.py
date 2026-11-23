@@ -61,7 +61,10 @@ def login(_user, password):
         )
         print("登录接口状态码:", r1.status_code)
         print("是否存在Location:", "Location" in r1.headers)
-    
+        if r1.status_code == 429:
+            print("请求受到频率限制")
+            print("Retry-After:", r1.headers.get("Retry-After", "服务器未提供"))
+            return 0, 0
         location = r1.headers.get("Location", "")
         if "access=" not in location:
             print("错误：未获得预期的登录授权信息")
@@ -624,4 +627,5 @@ if __name__ == "__main__":
             exit(0)
     else:
         print('用户名和密码数量不对')
+
 
