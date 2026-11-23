@@ -44,12 +44,37 @@ def login(_user, password):
         "redirect_uri": "https://s3-us-west-2.amazonaws.com/hm-registration/successsignin.html",
         "token": "access"
     }
-    r1 = requests.post(url1, data=data1, headers=_headers, allow_redirects=False)
+    # r1 = requests.post(url1, data=data1, headers=_headers, allow_redirects=False)
+    # try:
+    #     location = r1.headers["Location"]
+    #     code = get_code(location)
+    # except:
+    #     return 0, 0
+
     try:
-        location = r1.headers["Location"]
+        r1 = requests.post(
+            url1,
+            data=data1,
+            headers=_headers,
+            allow_redirects=False,
+            timeout=15
+        )
+        print("登录接口状态码:", r1.status_code)
+        print("是否存在Location:", "Location" in r1.headers)
+    
+        location = r1.headers.get("Location", "")
+        if "access=" not in location:
+            print("错误：未获得预期的登录授权信息")
+            return 0, 0
+    
         code = get_code(location)
-    except:
+    except requests.RequestException as e:
+        print("登录请求异常类型:", type(e).__name__)
         return 0, 0
+    except (IndexError, KeyError, ValueError) as e:
+        print("登录响应解析失败:", type(e).__name__)
+        return 0, 0
+    
     # print("access_code获取成功！")
     # print(code)
 
@@ -599,3 +624,4 @@ if __name__ == "__main__":
             exit(0)
     else:
         print('用户名和密码数量不对')
+
