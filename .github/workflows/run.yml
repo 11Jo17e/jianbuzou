@@ -10,10 +10,10 @@ name: 刷步数
 #   watch:
 #     types: started
 
-on:
-  schedule:
-    - cron: '0 4,8,14 * * *'
-  workflow_dispatch:
+# on:
+#   schedule:
+#     - cron: '0 4,8,14 * * *'
+#   workflow_dispatch:
 
 
 jobs:
